@@ -7,8 +7,6 @@ import io.restassured.http.ContentType;
 import org.apache.http.params.CoreConnectionPNames;
 import org.junit.After;
 import org.junit.Test;
-
-import static io.restassured.RestAssured.config;
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
 import static org.hamcrest.MatcherAssert.assertThat;

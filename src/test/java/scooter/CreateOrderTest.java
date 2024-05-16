@@ -46,7 +46,7 @@ public class CreateOrderTest {
                 .baseUri(BASE_URI)
                 .body(order)
                 .when()
-                .post(CREATE_ORDER_PATH)
+                .post(ORDERS_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_CREATED)

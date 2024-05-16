@@ -6,7 +6,7 @@ public class Constants {
     public static final String API_PREFIX = "/api/v1"; // префикс АПИ
     public static final String CREATE_COURIER_PATH = API_PREFIX +"/courier"; // создание курьера; добавить /:id для удаления
     public static final String COURIER_LOGIN_PATH = API_PREFIX + "/courier/login"; // логин курьера
-    public static final String CREATE_ORDER_PATH = API_PREFIX + "/orders"; // создание заказа, получение списка заказов
+    public static final String ORDERS_PATH = API_PREFIX + "/orders"; // создание заказа, получение списка заказов
     public static final String CANCEL_ORDER_PATH = API_PREFIX + "/orders/cancel"; // отмена заказа
 
 

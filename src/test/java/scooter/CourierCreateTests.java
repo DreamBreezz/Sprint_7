@@ -3,27 +3,12 @@ package scooter;
 import io.restassured.http.ContentType;
 import org.junit.After;
 import org.junit.Test;
-
-import java.util.Map;
-
 import static io.restassured.RestAssured.*;
 import static java.net.HttpURLConnection.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertTrue;
 import static scooter.Constants.*;
-
-/**
- * Создание курьера
- * Проверь:
-     * --- курьера можно создать;
-     * --- нельзя создать двух одинаковых курьеров;
-     * --- чтобы создать курьера, нужно передать в ручку все обязательные поля;
-     * --- запрос возвращает правильный код ответа;
-     * --- успешный запрос возвращает ok: true;
-     * --- если одного из полей нет, запрос возвращает ошибку;
-     * --- если создать пользователя с логином, который уже есть, возвращается ошибка.
- */
 
 public class CourierCreateTests {
 
@@ -38,7 +23,7 @@ public class CourierCreateTests {
                     .baseUri(BASE_URI)
                     .body(deleteCourier)
                     .when()
-                    .delete(CREATE_PATH+"/"+id)
+                    .delete(CREATE_COURIER_PATH +"/"+id)
                     .then().log().all()
                     .assertThat()
                     .statusCode(HTTP_OK)
@@ -60,7 +45,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(courier)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_CREATED)
@@ -80,7 +65,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(courierLogin)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_OK)
@@ -98,7 +83,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(courier)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .extract()
                 .path("ok")
@@ -113,7 +98,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(courierLogin)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_OK)
@@ -126,7 +111,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(courier)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_CONFLICT)
@@ -146,7 +131,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(jsonNoLogin)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_BAD_REQUEST)
@@ -165,7 +150,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(jsonNoPassword)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract()
@@ -183,7 +168,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(jsonNoName)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract()
@@ -205,7 +190,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(courierOne)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_CREATED)
@@ -225,7 +210,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(courierOneLogin)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_OK)
@@ -241,7 +226,7 @@ public class CourierCreateTests {
                 .baseUri(BASE_URI)
                 .body(json2)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat().statusCode(HTTP_CONFLICT)
                 .extract()

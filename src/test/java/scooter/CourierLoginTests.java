@@ -6,13 +6,7 @@ import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import org.apache.http.params.CoreConnectionPNames;
 import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.config;
 import static io.restassured.RestAssured.given;
@@ -41,7 +35,7 @@ public class CourierLoginTests {
                     .baseUri(BASE_URI)
                     .body(deleteCourier)
                     .when()
-                    .delete(CREATE_PATH+"/"+id)
+                    .delete(CREATE_COURIER_PATH +"/"+id)
                     .then().log().all()
                     .assertThat()
                     .statusCode(HTTP_OK)
@@ -64,7 +58,7 @@ public class CourierLoginTests {
                 .baseUri(BASE_URI)
                 .body(courier)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_CREATED)
@@ -84,7 +78,7 @@ public class CourierLoginTests {
                 .baseUri(BASE_URI)
                 .body(courierLogin)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_OK)
@@ -108,7 +102,7 @@ public class CourierLoginTests {
                 .baseUri(BASE_URI)
                 .body(jsonNoPassword)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_BAD_REQUEST)
@@ -132,7 +126,7 @@ public class CourierLoginTests {
                 .baseUri(BASE_URI)
                 .body(jsonNoLogin)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_BAD_REQUEST)
@@ -156,7 +150,7 @@ public class CourierLoginTests {
                 .baseUri(BASE_URI)
                 .body(jsonNoLogin)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_NOT_FOUND)
@@ -181,7 +175,7 @@ public class CourierLoginTests {
                 .baseUri(BASE_URI)
                 .body(courier)
                 .when()
-                .post(CREATE_PATH)
+                .post(CREATE_COURIER_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_CREATED)
@@ -201,7 +195,7 @@ public class CourierLoginTests {
                 .baseUri(BASE_URI)
                 .body(courierLogin)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_OK)
@@ -218,7 +212,7 @@ public class CourierLoginTests {
                 .baseUri(BASE_URI)
                 .body(courierLoginWrongPass)
                 .when()
-                .post(LOGIN_PATH)
+                .post(COURIER_LOGIN_PATH)
                 .then().log().all()
                 .assertThat()
                 .statusCode(HTTP_NOT_FOUND)

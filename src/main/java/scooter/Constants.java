@@ -4,9 +4,11 @@ public class Constants {
     // адреса запросов
     public static final String BASE_URI = "https://qa-scooter.praktikum-services.ru"; // базовый адрес для запросов
     public static final String API_PREFIX = "/api/v1"; // префикс АПИ
-    public static final String CREATE_PATH = API_PREFIX +"/courier"; // создание курьера; добавить /:id для удаления
-    public static final String LOGIN_PATH = API_PREFIX + "/courier/login"; // логин курьера
-    public static final String ORDERS_PATH = API_PREFIX + "/orders"; // создание заказа, получение списка заказов
+    public static final String CREATE_COURIER_PATH = API_PREFIX +"/courier"; // создание курьера; добавить /:id для удаления
+    public static final String COURIER_LOGIN_PATH = API_PREFIX + "/courier/login"; // логин курьера
+    public static final String CREATE_ORDER_PATH = API_PREFIX + "/orders"; // создание заказа, получение списка заказов
+    public static final String CANCEL_ORDER_PATH = API_PREFIX + "/orders/cancel"; // отмена заказа
+
 
     // тексты ошибок
     public static final String LOGIN_ALREADY_USED = "Этот логин уже используется";

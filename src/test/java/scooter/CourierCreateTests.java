@@ -3,6 +3,9 @@ package scooter;
 import io.restassured.http.ContentType;
 import org.junit.After;
 import org.junit.Test;
+
+import java.util.Map;
+
 import static io.restassured.RestAssured.*;
 import static java.net.HttpURLConnection.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,18 +25,18 @@ import static scooter.Constants.*;
      * --- если создать пользователя с логином, который уже есть, возвращается ошибка.
  */
 
-public class CourierCreateAndLoginTest {
+public class CourierCreateTests {
 
     public int id;
 
     @After
     public void deleteCourier() {
-        if(id != 0) {
-            String json = "{\"id\":" + id + "\"}";
+        if(id > 0) {
+            String deleteCourier = "{\"id\":\""+ id +"\"}";
             boolean delete = given().log().all()
                     .contentType(ContentType.JSON)
                     .baseUri(BASE_URI)
-                    .body(json)
+                    .body(deleteCourier)
                     .when()
                     .delete(CREATE_PATH+"/"+id)
                     .then().log().all()
@@ -49,7 +52,7 @@ public class CourierCreateAndLoginTest {
     @Test // создание курьера
     public void courierCreate() {
         // генерируем json для создания
-        var courier = new Courier("ninja 4533", "1234", "saske4533");
+        var courier = new Courier("ninja 4585", "1234", "saske4579");
 
         // дёргаем ручку создания
         boolean create = given().log().all()
@@ -72,7 +75,7 @@ public class CourierCreateAndLoginTest {
         var courierLogin = CourierLogin.from(courier);
 
         // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить
-        int courierId = given().log().all()
+        id = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(courierLogin)
@@ -89,7 +92,7 @@ public class CourierCreateAndLoginTest {
     @Test // нельзя создать двух одинаковых курьеров
     public void courierUnableCreateTwoSame() {
         // генерируем json для создания
-        var courier = new Courier("ninja 4545", "1242", "saske4545");
+        var courier = new Courier("ninja 4576", "1242", "saske4571");
         given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
@@ -105,7 +108,7 @@ public class CourierCreateAndLoginTest {
         var courierLogin = CourierLogin.from(courier);
 
         // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить
-        int courierId = given().log().all()
+        id = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(courierLogin)
@@ -156,7 +159,7 @@ public class CourierCreateAndLoginTest {
 
     @Test // нельзя создать курьера, не указав пароль
     public void courierCreateNoPassword() {
-        String jsonNoPassword = "{\"login\":\"ninja4501234\", \"firstName\":\"saske4503\"}";
+        String jsonNoPassword = "{\"login\":\"ninja4507\", \"firstName\":\"saske4503\"}";
         String message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
@@ -174,7 +177,7 @@ public class CourierCreateAndLoginTest {
     // этот тест упадёт, т.к. возможно создать курьера без имени
     @Test // нельзя создать курьера, не указав имя
     public void courierCreateNoName() {
-        String jsonNoName = "{\"login\":\"ninja455\", \"password\":\"1234\"}";
+        String jsonNoName = "{\"login\":\"ninja4588\", \"password\":\"1234\"}";
         String message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
@@ -192,8 +195,8 @@ public class CourierCreateAndLoginTest {
     // этот тест упадёт, т.к. текст ответа не соответствует документации
     @Test // нельзя создать курьера с существующим логином
     public void courierCreateSameLogin() {
-        // генерируем первый джейсон
-        var courierOne = new Courier("ninja4557", "1234", "saske4556");
+        // генерируем json первого курьера
+        var courierOne = new Courier("ninja4589", "1234", "saske4572");
 
         //создаём клиента
         // дёргаем ручку создания
@@ -217,7 +220,7 @@ public class CourierCreateAndLoginTest {
         var courierOneLogin = CourierLogin.from(courierOne);
 
         // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить
-        int courierId = given().log().all()
+        id = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(courierOneLogin)
@@ -229,8 +232,8 @@ public class CourierCreateAndLoginTest {
                 .extract()
                 .path("id");
 
-        // генерируем второй json, с таким же логином, как у первого
-        String json2 = "{\"login\":\"ninja4557\", \"password\":\"123434\", \"firstName\":\"saske455543\"}";
+        // генерируем второй json, с таким же логином, как у первого, но другим именем
+        String json2 = "{\"login\":\"ninja4589\", \"password\":\"123434\", \"firstName\":\"saske455543\"}";
 
         // проверяем, что не удастся создать
         String message = given().log().all()

@@ -1,5 +1,7 @@
 package scooter;
 
+import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.http.ContentType;
 import org.junit.Test;
 import java.util.List;
@@ -10,10 +12,14 @@ import static scooter.Constants.*;
 
 public class GetOrdersListTest {
 
+    public List<String> orders;
+
     @Test
+    @DisplayName("[+] Orders - Получение списка заказов")
+
+    @Step("Получение списка заказов")
     public void getOrdersList() {
-        List<String> orders = given().log().all()
-                //.config(config)
+        orders = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .when()
@@ -23,8 +29,9 @@ public class GetOrdersListTest {
                 .statusCode(HTTP_OK)
                 .extract()
                 .path("orders");
-
-        // проверяем, что orders не пустой
+    }
+    @Step("orders не пустой")
+    public void checkOrdersNotNull() {
         assertNotNull(orders);
     }
 }

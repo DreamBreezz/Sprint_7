@@ -1,23 +1,28 @@
 package scooter;
 
+import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.http.ContentType;
 import org.junit.After;
 import org.junit.Test;
 import static io.restassured.RestAssured.*;
 import static java.net.HttpURLConnection.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static scooter.Constants.*;
 
 public class CourierCreateTests {
 
     public int id;
+    public boolean create;
+    public Courier courier;
+    public String message;
 
     @After
+    @Step("Удаление курьера, если был создан")
     public void deleteCourier() {
         if(id > 0) {
-            String deleteCourier = "{\"id\":\""+ id +"\"}";
+            String deleteCourier = "{\"id\":\"" + id + "\"}";
             boolean delete = given().log().all()
                     .contentType(ContentType.JSON)
                     .baseUri(BASE_URI)
@@ -34,13 +39,15 @@ public class CourierCreateTests {
         }
     }
 
-    @Test // создание курьера
+    @Test
+    @DisplayName("[+] Courier - Создание курьера")
+
+    @Step("Создание курьера")
     public void courierCreate() {
         // генерируем json для создания
-        var courier = new Courier("ninja 4585", "1234", "saske4579");
-
+        courier = new Courier("ninja 4587", "1234", "saske4579");
         // дёргаем ручку создания
-        boolean create = given().log().all()
+        create = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(courier)
@@ -50,12 +57,50 @@ public class CourierCreateTests {
                 .assertThat()
                 .statusCode(HTTP_CREATED)
                 .extract()
-                .path("ok")
-                ;
-
-        //проверяем, что ok = true
+                .path("ok");
+    }
+    @Step("Проверка, что в ответе ok = true")
+    public void checkKeyOkEqualsTrue() {
         assertTrue(create);
+    }
+    @Step("Логин курьера (для дальнейшего удаления)")
+    public void courierLogin() {
+        // создаём json для логина
+        var courierLogin = CourierLogin.from(courier);
 
+        // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить курьера
+        id = given().log().all()
+                .contentType(ContentType.JSON)
+                .baseUri(BASE_URI)
+                .body(courierLogin)
+                .when()
+                .post(COURIER_LOGIN_PATH)
+                .then().log().all()
+                .assertThat()
+                .statusCode(HTTP_OK)
+                .extract()
+                .path("id");
+    }
+
+    // этот тест упадёт, т.к. текст ответа не соответствует документации
+    @Test
+    @DisplayName("[-] Courier - Создание курьера: два одинаковых")
+
+    @Step("Создание первого курьера")
+    public void createFirstCourier() {
+        // генерируем json для создания
+        courier = new Courier("ninja 4587", "1242", "saske4571");
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .baseUri(BASE_URI)
+                .body(courier)
+                .when()
+                .post(CREATE_COURIER_PATH)
+                .then().log().all()
+                .extract()
+                .path("ok");
+
+        // логин курьера, чтобы узнать ID, чтобы потом удалить
         // создаём json для логина
         var courierLogin = CourierLogin.from(courier);
 
@@ -72,41 +117,9 @@ public class CourierCreateTests {
                 .extract()
                 .path("id");
     }
-
-    // этот тест упадёт, т.к. текст ответа не соответствует документации
-    @Test // нельзя создать двух одинаковых курьеров
-    public void courierUnableCreateTwoSame() {
-        // генерируем json для создания
-        var courier = new Courier("ninja 4576", "1242", "saske4571");
-        given().log().all()
-                .contentType(ContentType.JSON)
-                .baseUri(BASE_URI)
-                .body(courier)
-                .when()
-                .post(CREATE_COURIER_PATH)
-                .then().log().all()
-                .extract()
-                .path("ok")
-        ;
-
-        // создаём json для логина
-        var courierLogin = CourierLogin.from(courier);
-
-        // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить
-        id = given().log().all()
-                .contentType(ContentType.JSON)
-                .baseUri(BASE_URI)
-                .body(courierLogin)
-                .when()
-                .post(COURIER_LOGIN_PATH)
-                .then().log().all()
-                .assertThat()
-                .statusCode(HTTP_OK)
-                .extract()
-                .path("id");
-
-        // пробуем создать клиента ещё раз и вытаскиваем сообщение об ошибке
-        String message = given().log().all()
+    @Step("Попытка создать второго курьера с такими же параметрами, как у первого")
+    public void tryCreateSecondCourier() {
+        message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(courier)
@@ -116,17 +129,20 @@ public class CourierCreateTests {
                 .assertThat()
                 .statusCode(HTTP_CONFLICT)
                 .extract()
-                .path("message")
-                ;
-
-        // проверяем текст сообщения об ошибке
-        assertThat(message, equalTo(LOGIN_ALREADY_USED));
+                .path("message");
+    }
+    @Step("Проверка текста сообщения об ошибке")
+    public void checkErrorMessageText() {
+            assertEquals(message, LOGIN_ALREADY_USED);
     }
 
-    @Test // нельзя создать курьера, не указав логин
-    public void courierCreateNoLogin() {
+    @Test
+    @DisplayName("[-] Courier - Создание курьера: без логина")
+
+    @Step("Попытка создать курьера без логина")
+    public void tryCreateCourierWithoutLogin() {
         String jsonNoLogin = "{\"password\":\"1234\", \"firstName\":\"saske4502\"}";
-        String message = given().log().all()
+        message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(jsonNoLogin)
@@ -136,16 +152,21 @@ public class CourierCreateTests {
                 .assertThat()
                 .statusCode(HTTP_BAD_REQUEST)
                 .extract()
-                .path("message")
-                ;
-        assertThat(message, equalTo(NOT_ENOUGH_DATA_TO_CREATE));
-
+                .path("message");
     }
 
-    @Test // нельзя создать курьера, не указав пароль
-    public void courierCreateNoPassword() {
+    @Step("Проверка текста сообщения об ошибке")
+    public void checkErrorMessageText2() {
+        assertEquals(message, NOT_ENOUGH_DATA_TO_CREATE);
+    }
+
+    @Test
+    @DisplayName("[-] Courier - Создание курьера: без пароля")
+
+    @Step("Попытка создать курьера без пароля")
+    public void tryCreateCourierWithoutPassword() {
         String jsonNoPassword = "{\"login\":\"ninja4507\", \"firstName\":\"saske4503\"}";
-        String message = given().log().all()
+        message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(jsonNoPassword)
@@ -154,16 +175,22 @@ public class CourierCreateTests {
                 .then().log().all()
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract()
-                .path("message")
-                ;
-        assertThat(message, equalTo(NOT_ENOUGH_DATA_TO_CREATE));
+                .path("message");
+    }
+
+    @Step("Проверка текста сообщения об ошибке")
+    public void checkErrorMessageText3() {
+        assertEquals(message, NOT_ENOUGH_DATA_TO_CREATE);
     }
 
     // этот тест упадёт, т.к. возможно создать курьера без имени
-    @Test // нельзя создать курьера, не указав имя
-    public void courierCreateNoName() {
+    @Test
+    @DisplayName("[-] Courier - Создание курьера: без имени")
+
+    @Step("Попытка создания курьера без имени")
+    public void tryCreateCourierWithoutName() {
         String jsonNoName = "{\"login\":\"ninja4588\", \"password\":\"1234\"}";
-        String message = given().log().all()
+        message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(jsonNoName)
@@ -172,18 +199,22 @@ public class CourierCreateTests {
                 .then().log().all()
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract()
-                .path("message")
-                ;
-        assertThat(message, equalTo(NOT_ENOUGH_DATA_TO_CREATE));
+                .path("message");
+    }
+    @Step("Проверка текста сообщения об ошибке")
+    public void checkErrorMessageText4() {
+        assertEquals(message, NOT_ENOUGH_DATA_TO_CREATE);
     }
 
     // этот тест упадёт, т.к. текст ответа не соответствует документации
-    @Test // нельзя создать курьера с существующим логином
+    @Test
+    @DisplayName("[-] Courier - Создание курьера: с существующим логином")
+
+    @Step("Создание первого курьера")
     public void courierCreateSameLogin() {
         // генерируем json первого курьера
         var courierOne = new Courier("ninja4589", "1234", "saske4572");
 
-        //создаём клиента
         // дёргаем ручку создания
         boolean create = given().log().all()
                 .contentType(ContentType.JSON)
@@ -195,13 +226,9 @@ public class CourierCreateTests {
                 .assertThat()
                 .statusCode(HTTP_CREATED)
                 .extract()
-                .path("ok")
-                ;
+                .path("ok").equals(true);
 
-        //проверяем, что ok = true
-        assertTrue(create);
-
-        // создаём json для логина
+        // создаём json для логина - нам нужен ID курьера, чтобы потом его удалить
         var courierOneLogin = CourierLogin.from(courierOne);
 
         // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить
@@ -216,12 +243,14 @@ public class CourierCreateTests {
                 .statusCode(HTTP_OK)
                 .extract()
                 .path("id");
-
+    }
+    @Step("Попытка создать второго курьера, с таким же логином")
+    public void tryCreateCourierWithSameLogin() {
         // генерируем второй json, с таким же логином, как у первого, но другим именем
         String json2 = "{\"login\":\"ninja4589\", \"password\":\"123434\", \"firstName\":\"saske455543\"}";
 
         // проверяем, что не удастся создать
-        String message = given().log().all()
+        message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(json2)
@@ -230,8 +259,11 @@ public class CourierCreateTests {
                 .then().log().all()
                 .assertThat().statusCode(HTTP_CONFLICT)
                 .extract()
-                .path("message")
-                ;
-        assertThat(message, equalTo(LOGIN_ALREADY_USED));
+                .path("message");
+        }
+
+    @Step("Проверка текста сообщения об ошибке")
+    public void checkErrorMessageText5() {
+        assertEquals(message, LOGIN_ALREADY_USED);
     }
 }

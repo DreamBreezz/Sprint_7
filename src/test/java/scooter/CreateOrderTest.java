@@ -1,5 +1,7 @@
 package scooter;
 
+import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.http.ContentType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,7 @@ import static scooter.Constants.*;
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
     private List<String> color;
+    private int track;
 
     public CreateOrderTest(List<String> color) {
         this.color = color;
@@ -31,6 +34,9 @@ public class CreateOrderTest {
 
     // все тесты попадают, т.к. не работает отмена заказа и нельзя вернуть систему в исходное состояние
     @Test
+    @DisplayName("[+] Orders - Создание заказа: 4 разных варианта цвета")
+
+    @Step("Создание заказа")
     public void CreateOrder() {
         var order = new Order("Naruto",
                 "Uchiha",
@@ -41,7 +47,7 @@ public class CreateOrderTest {
                 "2020-06-06",
                 "Saske, come back to Konoha",
                 color);
-        int track = given().log().all()
+        track = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
                 .body(order)
@@ -52,9 +58,14 @@ public class CreateOrderTest {
                 .statusCode(HTTP_CREATED)
                 .extract()
                 .path("track");
+    }
+    @Step("Проверка, что тело ответа содержит track")
+    public void checkTrack() {
         assertTrue(track > 0);
+    }
 
-        // если заказ создался -- отменяем заказ
+    @Step("Отмена заказа, если был создан")
+    public void orderCancelIfWasCreated() {
         if (track > 0) {
             String deleteOrder = "{\"track\":" + track +"}";
             boolean ok = given().log().all()
@@ -68,8 +79,7 @@ public class CreateOrderTest {
                     .statusCode(HTTP_OK)
                     .and()
                     .extract()
-                    .path("ok");
-            assertTrue(ok);
+                    .path("ok").equals(true);
         }
     }
 }

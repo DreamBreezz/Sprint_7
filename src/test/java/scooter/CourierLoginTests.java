@@ -8,7 +8,6 @@ import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static scooter.Constants.*;
 
 public class CourierLoginTests {
@@ -45,10 +44,44 @@ public class CourierLoginTests {
         isIdReturned();
     }
 
+    // этот тест падает по таймауту (1 мин)
+    @Test
+    @DisplayName("[-] Courier - Логин курьера в системе: без пароля")
+    public void loginWithoutPasswordTest() {
+        tryLoginWithoutPassword();
+        checkErrorMessageTextNotEnoughDataToLogin();
+    }
+
+    @Test
+    @DisplayName("[-] Courier - Логин курьера в системе: без логина")
+    public void loginWithoutLoginTest() {
+        courierLoginNoLogin();
+        checkErrorMessageTextNotEnoughDataToLogin();
+    }
+
+    @Test
+    @DisplayName("[-] Courier - Логин курьера в системе: некорректный логин")
+    public void loginWithWrongLoginTest() {
+        tryLoginWithWrongLogin();
+        checkErrorMessageTextAccountNotFound();
+    }
+
+    @Test
+    @DisplayName("[-] Courier - Логин курьера в системе: корректный логин, некорректный пароль")
+    public void loginWithWrongPasswordTest() {
+        createCourier();
+        tryLoginWithWrongPassword();
+        checkErrorMessageTextAccountNotFound();
+    }
+
+
+
+    // === S T E P S ===
+
     @Step("Создание курьера")
     public void createCourier() {
         // генерируем json для создания
-        courier = new Courier("ninja 5016", "1234", "saske4579");
+        courier = new Courier("ninja5027", "1234", "saske4579");
 
         // дёргаем ручку создания
         boolean create = given().log().all()
@@ -87,14 +120,6 @@ public class CourierLoginTests {
         assert id > 0;
     }
 
-    // этот тест падает по таймауту (1 мин)
-    @Test
-    @DisplayName("[-] Courier - Логин курьера в системе: без пароля")
-    public void loginWithoutPasswordTest() {
-        tryLoginWithoutPassword();
-        checkErrorMessageTextNotEnoughDataToLogin();
-    }
-
     @Step("Попытка логина без пароля")
     public void tryLoginWithoutPassword() {
         // создаём json для логина
@@ -118,13 +143,6 @@ public class CourierLoginTests {
         assertEquals(message, NOT_ENOUGH_DATA_TO_LOGIN);
     }
 
-    @Test
-    @DisplayName("[-] Courier - Логин курьера в системе: без логина")
-    public void loginWithoutLoginTest() {
-        courierLoginNoLogin();
-        checkErrorMessageTextNotEnoughDataToLogin();
-    }
-
     @Step("Попытка создания курьера без логина")
     public void courierLoginNoLogin() {
         // создаём json для логина
@@ -142,13 +160,6 @@ public class CourierLoginTests {
                 .statusCode(HTTP_BAD_REQUEST)
                 .extract()
                 .path("message");
-    }
-
-    @Test
-    @DisplayName("[-] Courier - Логин курьера в системе: некорректный логин")
-    public void loginWithWrongLoginTest() {
-        tryLoginWithWrongLogin();
-        checkErrorMessageTextAccountNotFound();
     }
 
     @Step("Попытка логина с некорректным логином")
@@ -174,49 +185,6 @@ public class CourierLoginTests {
         assertEquals(message, ACCOUNT_NOT_FOUND);
     }
 
-    @Test
-    @DisplayName("[-] Courier - Логин курьера в системе: корректный логин, некорректный пароль")
-    public void loginWithWrongPasswordTest() {
-        createCourier2();
-        tryLoginWithWrongPassword();
-        checkErrorMessageTextAccountNotFound();
-    }
-
-    @Step("Создание курьера") // чтобы иметь заведомо корректный логин
-    public void createCourier2() {
-        // генерируем json для создания
-        var courier = new Courier("ninja 5018", "1234", "saske4579");
-
-        // дёргаем ручку создания
-        boolean create = given().log().all()
-                //.config(config)
-                .contentType(ContentType.JSON)
-                .baseUri(BASE_URI)
-                .body(courier)
-                .when()
-                .post(CREATE_COURIER_PATH)
-                .then().log().all()
-                .assertThat()
-                .statusCode(HTTP_CREATED)
-                .extract()
-                .path("ok").equals(true);
-
-        // создаём json для логина с корректным паролем
-        var courierLogin = CourierLogin.from(courier);
-
-        // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить
-        id = given().log().all()
-                .contentType(ContentType.JSON)
-                .baseUri(BASE_URI)
-                .body(courierLogin)
-                .when()
-                .post(COURIER_LOGIN_PATH)
-                .then().log().all()
-                .assertThat()
-                .statusCode(HTTP_OK)
-                .extract()
-                .path("id");
-    }
     @Step("Логин с некорректным паролем")
     public void tryLoginWithWrongPassword() {
 

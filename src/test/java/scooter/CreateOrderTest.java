@@ -3,6 +3,7 @@ package scooter;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.http.ContentType;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,9 +36,14 @@ public class CreateOrderTest {
     // все тесты попадают, т.к. не работает отмена заказа и нельзя вернуть систему в исходное состояние
     @Test
     @DisplayName("[+] Orders - Создание заказа: 4 разных варианта цвета")
+    public void createOrderTest() {
+        createOrder();
+        checkTrack();
+        orderCancelIfWasCreated();
+    }
 
     @Step("Создание заказа")
-    public void CreateOrder() {
+    public void createOrder() {
         var order = new Order("Naruto",
                 "Uchiha",
                 "Konoha, 142 apt.",
@@ -64,6 +70,7 @@ public class CreateOrderTest {
         assertTrue(track > 0);
     }
 
+    // всегда падает, через постман тоже
     @Step("Отмена заказа, если был создан")
     public void orderCancelIfWasCreated() {
         if (track > 0) {

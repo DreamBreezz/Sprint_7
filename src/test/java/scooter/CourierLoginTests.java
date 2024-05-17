@@ -39,11 +39,16 @@ public class CourierLoginTests {
 
     @Test
     @DisplayName("[+] Courier - Логин курьера в системе")
+    public void loginCourierTest() {
+        createCourier();
+        loginCourier();
+        isIdReturned();
+    }
 
     @Step("Создание курьера")
     public void createCourier() {
         // генерируем json для создания
-        courier = new Courier("ninja 4591", "1234", "saske4579");
+        courier = new Courier("ninja 5016", "1234", "saske4579");
 
         // дёргаем ручку создания
         boolean create = given().log().all()
@@ -85,6 +90,10 @@ public class CourierLoginTests {
     // этот тест падает по таймауту (1 мин)
     @Test
     @DisplayName("[-] Courier - Логин курьера в системе: без пароля")
+    public void loginWithoutPasswordTest() {
+        tryLoginWithoutPassword();
+        checkErrorMessageTextNotEnoughDataToLogin();
+    }
 
     @Step("Попытка логина без пароля")
     public void tryLoginWithoutPassword() {
@@ -105,12 +114,16 @@ public class CourierLoginTests {
                 .path("message");
     }
     @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText() {
+    public void checkErrorMessageTextNotEnoughDataToLogin() {
         assertEquals(message, NOT_ENOUGH_DATA_TO_LOGIN);
     }
 
     @Test
     @DisplayName("[-] Courier - Логин курьера в системе: без логина")
+    public void loginWithoutLoginTest() {
+        courierLoginNoLogin();
+        checkErrorMessageTextNotEnoughDataToLogin();
+    }
 
     @Step("Попытка создания курьера без логина")
     public void courierLoginNoLogin() {
@@ -130,18 +143,18 @@ public class CourierLoginTests {
                 .extract()
                 .path("message");
     }
-    @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText2() {
-        assertEquals(message, NOT_ENOUGH_DATA_TO_LOGIN);
-    }
 
     @Test
     @DisplayName("[-] Courier - Логин курьера в системе: некорректный логин")
+    public void loginWithWrongLoginTest() {
+        tryLoginWithWrongLogin();
+        checkErrorMessageTextAccountNotFound();
+    }
 
     @Step("Попытка логина с некорректным логином")
     public void tryLoginWithWrongLogin() {
         // создаём json для логина
-        String jsonNoLogin = "{\"login\":\"ninja4507\", \"password\":\"1234\"}";
+        String jsonNoLogin = "{\"login\":\"ninja5017\", \"password\":\"1234\"}";
 
         // дёргаем ручку
         message = given().log().all()
@@ -157,17 +170,22 @@ public class CourierLoginTests {
                 .path("message");
     }
     @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText3() {
+    public void checkErrorMessageTextAccountNotFound() {
         assertEquals(message, ACCOUNT_NOT_FOUND);
     }
 
     @Test
     @DisplayName("[-] Courier - Логин курьера в системе: корректный логин, некорректный пароль")
+    public void loginWithWrongPasswordTest() {
+        createCourier2();
+        tryLoginWithWrongPassword();
+        checkErrorMessageTextAccountNotFound();
+    }
 
     @Step("Создание курьера") // чтобы иметь заведомо корректный логин
     public void createCourier2() {
         // генерируем json для создания
-        var courier = new Courier("ninja 4652", "1234", "saske4579");
+        var courier = new Courier("ninja 5018", "1234", "saske4579");
 
         // дёргаем ручку создания
         boolean create = given().log().all()
@@ -200,10 +218,10 @@ public class CourierLoginTests {
                 .path("id");
     }
     @Step("Логин с некорректным паролем")
-    public void loginWithWrongPassword() {
+    public void tryLoginWithWrongPassword() {
 
         // создаём json для такого же логина, но c некорректным паролем
-        var courierLoginWrongPass = new CourierLogin("ninja 4651", "wrongpass");
+        var courierLoginWrongPass = new CourierLogin("ninja 5019", "wrongpass");
 
         // дёргаем ручку
         message = given().log().all()
@@ -217,9 +235,5 @@ public class CourierLoginTests {
                 .statusCode(HTTP_NOT_FOUND)
                 .extract()
                 .path("message");
-    }
-    @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText4() {
-        assertEquals(message, ACCOUNT_NOT_FOUND);
     }
 }

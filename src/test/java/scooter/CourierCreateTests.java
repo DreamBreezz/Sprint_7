@@ -41,11 +41,16 @@ public class CourierCreateTests {
 
     @Test
     @DisplayName("[+] Courier - Создание курьера")
+    public void createCourierTest() {
+        courierCreate();
+        checkKeyOkEqualsTrue();
+        courierLogin();
+    }
 
     @Step("Создание курьера")
     public void courierCreate() {
         // генерируем json для создания
-        courier = new Courier("ninja 4587", "1234", "saske4579");
+        courier = new Courier("ninja 5010", "1234", "saske4579");
         // дёргаем ручку создания
         create = given().log().all()
                 .contentType(ContentType.JSON)
@@ -82,14 +87,20 @@ public class CourierCreateTests {
                 .path("id");
     }
 
+
     // этот тест упадёт, т.к. текст ответа не соответствует документации
     @Test
     @DisplayName("[-] Courier - Создание курьера: два одинаковых")
+    public void tryCreateTwoSameCouriersTest() {
+        createFirstCourier();
+        tryCreateSecondCourier();
+        checkErrorMessageTextLoginAlreadyUsed();
+    }
 
     @Step("Создание первого курьера")
     public void createFirstCourier() {
         // генерируем json для создания
-        courier = new Courier("ninja 4587", "1242", "saske4571");
+        courier = new Courier("ninja 5011", "1242", "saske4571");
         given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
@@ -132,12 +143,16 @@ public class CourierCreateTests {
                 .path("message");
     }
     @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText() {
+    public void checkErrorMessageTextLoginAlreadyUsed() {
             assertEquals(message, LOGIN_ALREADY_USED);
     }
 
     @Test
     @DisplayName("[-] Courier - Создание курьера: без логина")
+    public void tryCreateCourierWithoutLoginTest() {
+        tryCreateCourierWithoutLogin();
+        checkErrorMessageTextNotEnoughDataToCreate();
+    }
 
     @Step("Попытка создать курьера без логина")
     public void tryCreateCourierWithoutLogin() {
@@ -156,16 +171,20 @@ public class CourierCreateTests {
     }
 
     @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText2() {
+    public void checkErrorMessageTextNotEnoughDataToCreate() {
         assertEquals(message, NOT_ENOUGH_DATA_TO_CREATE);
     }
 
     @Test
     @DisplayName("[-] Courier - Создание курьера: без пароля")
+    public void createCourierWithoutPasswordTest() {
+        tryCreateCourierWithoutPassword();
+        checkErrorMessageTextNotEnoughDataToCreate();
+    }
 
     @Step("Попытка создать курьера без пароля")
     public void tryCreateCourierWithoutPassword() {
-        String jsonNoPassword = "{\"login\":\"ninja4507\", \"firstName\":\"saske4503\"}";
+        String jsonNoPassword = "{\"login\":\"ninja5012\", \"firstName\":\"saske4503\"}";
         message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
@@ -178,18 +197,17 @@ public class CourierCreateTests {
                 .path("message");
     }
 
-    @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText3() {
-        assertEquals(message, NOT_ENOUGH_DATA_TO_CREATE);
-    }
-
     // этот тест упадёт, т.к. возможно создать курьера без имени
     @Test
     @DisplayName("[-] Courier - Создание курьера: без имени")
+    public void createCourierWithoutNameTest() {
+        tryCreateCourierWithoutName();
+        checkErrorMessageTextNotEnoughDataToCreate();
+    }
 
     @Step("Попытка создания курьера без имени")
     public void tryCreateCourierWithoutName() {
-        String jsonNoName = "{\"login\":\"ninja4588\", \"password\":\"1234\"}";
+        String jsonNoName = "{\"login\":\"ninja5013\", \"password\":\"1234\"}";
         message = given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URI)
@@ -201,19 +219,20 @@ public class CourierCreateTests {
                 .extract()
                 .path("message");
     }
-    @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText4() {
-        assertEquals(message, NOT_ENOUGH_DATA_TO_CREATE);
-    }
 
     // этот тест упадёт, т.к. текст ответа не соответствует документации
     @Test
     @DisplayName("[-] Courier - Создание курьера: с существующим логином")
+    public void createCourierWithLoginExistsTest() {
+        createFirstCourier2();
+        tryCreateCourierWithSameLogin();
+        checkErrorMessageTextLoginAlreadyUsed();
+    }
 
     @Step("Создание первого курьера")
-    public void courierCreateSameLogin() {
+    public void createFirstCourier2() {
         // генерируем json первого курьера
-        var courierOne = new Courier("ninja4589", "1234", "saske4572");
+        var courierOne = new Courier("ninja5014", "1234", "saske4572");
 
         // дёргаем ручку создания
         boolean create = given().log().all()
@@ -247,7 +266,7 @@ public class CourierCreateTests {
     @Step("Попытка создать второго курьера, с таким же логином")
     public void tryCreateCourierWithSameLogin() {
         // генерируем второй json, с таким же логином, как у первого, но другим именем
-        String json2 = "{\"login\":\"ninja4589\", \"password\":\"123434\", \"firstName\":\"saske455543\"}";
+        String json2 = "{\"login\":\"ninja5015\", \"password\":\"123434\", \"firstName\":\"saske455543\"}";
 
         // проверяем, что не удастся создать
         message = given().log().all()
@@ -261,9 +280,4 @@ public class CourierCreateTests {
                 .extract()
                 .path("message");
         }
-
-    @Step("Проверка текста сообщения об ошибке")
-    public void checkErrorMessageText5() {
-        assertEquals(message, LOGIN_ALREADY_USED);
-    }
 }

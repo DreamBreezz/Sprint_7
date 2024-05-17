@@ -16,6 +16,10 @@ public class GetOrdersListTest {
 
     @Test
     @DisplayName("[+] Orders - Получение списка заказов")
+    public void getOrdersListTest() {
+        getOrdersList();
+        checkOrdersNotNull();
+    }
 
     @Step("Получение списка заказов")
     public void getOrdersList() {

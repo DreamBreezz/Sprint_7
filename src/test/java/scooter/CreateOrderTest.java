@@ -2,17 +2,18 @@ package scooter;
 
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.http.ContentType;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import scooter.order.Order;
+
 import java.util.List;
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.Assert.assertTrue;
-import static scooter.Constants.*;
+import static scooter.rests.OrderRests.createOrderRest;
+import static scooter.rests.OrderRests.orderCancelRest;
 
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
@@ -44,27 +45,14 @@ public class CreateOrderTest {
 
     @Step("Создание заказа")
     public void createOrder() {
-        var order = new Order("Naruto",
-                "Uchiha",
-                "Konoha, 142 apt.",
-                4,
-                "+7 800 355 35 35",
-                5,
-                "2020-06-06",
-                "Saske, come back to Konoha",
-                color);
-        track = given().log().all()
-                .contentType(ContentType.JSON)
-                .baseUri(BASE_URI)
-                .body(order)
-                .when()
-                .post(ORDERS_PATH)
-                .then().log().all()
-                .assertThat()
-                .statusCode(HTTP_CREATED)
-                .extract()
-                .path("track");
+        // создание json для заказа
+        Order order = Order.defaultOrder(color);
+        // тык в ручку
+        track = createOrderRest(order)
+                .assertThat().statusCode(HTTP_CREATED)
+                .extract().path("track");
     }
+
     @Step("Проверка, что тело ответа содержит track")
     public void checkTrack() {
         assertTrue(track > 0);
@@ -75,18 +63,10 @@ public class CreateOrderTest {
     public void orderCancelIfWasCreated() {
         if (track > 0) {
             String deleteOrder = "{\"track\":" + track +"}";
-            boolean ok = given().log().all()
-                    .contentType(ContentType.JSON)
-                    .baseUri(BASE_URI)
-                    .body(deleteOrder)
-                    .when()
-                    .put(CANCEL_ORDER_PATH)
-                    .then().log().all()
-                    .assertThat()
-                    .statusCode(HTTP_OK)
+            boolean ok = orderCancelRest(deleteOrder)
+                    .assertThat().statusCode(HTTP_OK)
                     .and()
-                    .extract()
-                    .path("ok").equals(true);
+                    .extract().path("ok").equals(true);
         }
     }
 }

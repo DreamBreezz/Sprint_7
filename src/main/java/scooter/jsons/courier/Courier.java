@@ -1,4 +1,4 @@
-package scooter.courier;
+package scooter.jsons.courier;
 
 import org.apache.commons.lang3.RandomStringUtils;
 

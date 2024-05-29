@@ -1,7 +1,7 @@
-package scooter.login;
+package scooter.jsons;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import scooter.courier.Courier;
+import scooter.jsons.courier.Courier;
 
 public class CourierLogin {
     private String login;

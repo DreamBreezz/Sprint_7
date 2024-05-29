@@ -1,4 +1,4 @@
-package scooter.courier;
+package scooter.jsons.courier;
 
 public class CourierNoPassword {
     private String login;
@@ -7,13 +7,13 @@ public class CourierNoPassword {
     public CourierNoPassword() {
     }
 
-    public CourierNoPassword(String password, String firstName) {
-        this.login = password;
+    public CourierNoPassword(String login, String firstName) {
+        this.login = login;
         this.firstName = firstName;
     }
 
     public static CourierNoPassword randomNoPassword() {
-        return new CourierNoPassword(Courier.random().getPassword(), Courier.random().getFirstName());
+        return new CourierNoPassword(Courier.random().getLogin(), Courier.random().getFirstName());
     }
 
     public String getFirstName() {

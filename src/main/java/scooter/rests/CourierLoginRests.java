@@ -1,9 +1,9 @@
 package scooter.rests;
 
 import io.restassured.response.ValidatableResponse;
-import scooter.login.CourierLoginNoLogin;
-import scooter.login.CourierLoginNoPassword;
-import scooter.login.CourierLoginWrongPassword;
+import scooter.jsons.login.CourierLoginNoLogin;
+import scooter.jsons.login.CourierLoginNoPassword;
+import scooter.jsons.login.CourierLoginWrongPassword;
 
 import static scooter.Constants.COURIER_LOGIN_PATH;
 import static scooter.rests.RestBase.spec;

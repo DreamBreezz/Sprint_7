@@ -1,7 +1,7 @@
 package scooter.steps;
 
 import io.qameta.allure.Step;
-import scooter.order.Order;
+import scooter.jsons.order.Order;
 
 import java.util.List;
 
@@ -41,6 +41,7 @@ public class OrderSteps {
                     .assertThat().statusCode(HTTP_OK)
                     .and()
                     .extract().path("ok").equals(true);
+            track = 0;
         }
     }
 

@@ -1,4 +1,4 @@
-package scooter.order;
+package scooter.jsons.order;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package scooter.courier;
+package scooter.jsons.courier;
 
 public class CourierNoLogin {
     private String password;

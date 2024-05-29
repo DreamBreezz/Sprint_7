@@ -12,6 +12,7 @@ public class CourierCreateTests {
     @Step("Удаление курьера, если был создан")
     public void deleteCourier() {
         deleteCourierIfExists(id);
+        id = 0;
     }
 
     @Test

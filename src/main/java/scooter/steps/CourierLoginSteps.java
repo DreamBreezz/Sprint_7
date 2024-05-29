@@ -1,11 +1,11 @@
 package scooter.steps;
 
 import io.qameta.allure.Step;
-import scooter.courier.Courier;
-import scooter.login.CourierLogin;
-import scooter.login.CourierLoginNoLogin;
-import scooter.login.CourierLoginNoPassword;
-import scooter.login.CourierLoginWrongPassword;
+import scooter.jsons.courier.Courier;
+import scooter.jsons.CourierLogin;
+import scooter.jsons.login.CourierLoginNoLogin;
+import scooter.jsons.login.CourierLoginNoPassword;
+import scooter.jsons.login.CourierLoginWrongPassword;
 
 import static java.net.HttpURLConnection.*;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -51,6 +51,7 @@ public class CourierLoginSteps {
                     .assertThat().statusCode(HTTP_OK)
                     .extract().path("ok");
             assertTrue(delete);
+            id = 0;
         }
     }
 

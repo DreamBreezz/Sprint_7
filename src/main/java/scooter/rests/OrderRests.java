@@ -1,7 +1,7 @@
 package scooter.rests;
 
 import io.restassured.response.ValidatableResponse;
-import scooter.order.Order;
+import scooter.jsons.order.Order;
 import static scooter.Constants.*;
 import static scooter.rests.RestBase.spec;
 

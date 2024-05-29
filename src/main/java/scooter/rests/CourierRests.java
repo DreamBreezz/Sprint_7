@@ -1,11 +1,11 @@
 package scooter.rests;
 
 import io.restassured.response.ValidatableResponse;
-import scooter.courier.Courier;
-import scooter.courier.CourierNoLogin;
-import scooter.courier.CourierNoName;
-import scooter.courier.CourierNoPassword;
-import scooter.login.CourierLogin;
+import scooter.jsons.courier.Courier;
+import scooter.jsons.courier.CourierNoLogin;
+import scooter.jsons.courier.CourierNoName;
+import scooter.jsons.courier.CourierNoPassword;
+import scooter.jsons.CourierLogin;
 
 import static scooter.Constants.*;
 import static scooter.rests.RestBase.spec;

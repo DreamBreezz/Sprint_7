@@ -1,6 +1,7 @@
 package scooter;
 
 import io.qameta.allure.junit4.DisplayName;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -15,6 +16,11 @@ public class CreateOrderTest {
 
     public CreateOrderTest(List<String> color) {
         this.color = color;
+    }
+
+    @After
+    public void cancelOrder() {
+        orderCancelIfWasCreated();
     }
 
     @Parameterized.Parameters
@@ -33,6 +39,5 @@ public class CreateOrderTest {
     public void createOrderTest() {
         createOrder();
         checkTrack();
-        orderCancelIfWasCreated();
     }
 }

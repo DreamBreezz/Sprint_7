@@ -1,11 +1,11 @@
 package scooter.steps;
 
 import io.qameta.allure.Step;
-import scooter.courier.Courier;
-import scooter.courier.CourierNoLogin;
-import scooter.courier.CourierNoName;
-import scooter.courier.CourierNoPassword;
-import scooter.login.CourierLogin;
+import scooter.jsons.courier.Courier;
+import scooter.jsons.courier.CourierNoLogin;
+import scooter.jsons.courier.CourierNoName;
+import scooter.jsons.courier.CourierNoPassword;
+import scooter.jsons.CourierLogin;
 
 import static java.net.HttpURLConnection.*;
 import static org.junit.Assert.assertEquals;

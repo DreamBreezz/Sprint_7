@@ -1,4 +1,6 @@
-package scooter.login;
+package scooter.jsons.login;
+
+import scooter.jsons.CourierLogin;
 
 public class CourierLoginWrongPassword {
     public String login;

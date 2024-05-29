@@ -8,7 +8,7 @@ import scooter.courier.CourierNoPassword;
 import scooter.login.CourierLogin;
 
 import static scooter.Constants.*;
-import static scooter.RestBase.spec;
+import static scooter.rests.RestBase.spec;
 
 public class CourierRests {
     public static ValidatableResponse createCourierRest(Courier courier) {

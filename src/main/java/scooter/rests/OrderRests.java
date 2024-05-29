@@ -3,7 +3,7 @@ package scooter.rests;
 import io.restassured.response.ValidatableResponse;
 import scooter.order.Order;
 import static scooter.Constants.*;
-import static scooter.RestBase.spec;
+import static scooter.rests.RestBase.spec;
 
 public class OrderRests {
     public static ValidatableResponse createOrderRest(Order order) {

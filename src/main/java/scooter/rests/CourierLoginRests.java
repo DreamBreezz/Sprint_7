@@ -6,7 +6,7 @@ import scooter.login.CourierLoginNoPassword;
 import scooter.login.CourierLoginWrongPassword;
 
 import static scooter.Constants.COURIER_LOGIN_PATH;
-import static scooter.RestBase.spec;
+import static scooter.rests.RestBase.spec;
 
 public class CourierLoginRests {
     public static ValidatableResponse loginNoPasswordRest(CourierLoginNoPassword loginNoPassword) {

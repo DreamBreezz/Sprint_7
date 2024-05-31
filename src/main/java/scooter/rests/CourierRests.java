@@ -5,7 +5,7 @@ import scooter.jsons.courier.Courier;
 import scooter.jsons.courier.CourierNoLogin;
 import scooter.jsons.courier.CourierNoName;
 import scooter.jsons.courier.CourierNoPassword;
-import scooter.jsons.CourierLogin;
+import scooter.jsons.login.CourierLogin;
 
 import static scooter.Constants.*;
 import static scooter.rests.RestBase.spec;
@@ -38,14 +38,6 @@ public class CourierRests {
     public static ValidatableResponse courierNoPasswordRest(CourierNoPassword courierNoPassword) {
         return spec()
                 .body(courierNoPassword)
-                .when()
-                .post(CREATE_COURIER_PATH)
-                .then().log().all();
-    }
-
-    public static ValidatableResponse courierNoNameRest(CourierNoName courierNoName) {
-        return spec()
-                .body(courierNoName)
                 .when()
                 .post(CREATE_COURIER_PATH)
                 .then().log().all();

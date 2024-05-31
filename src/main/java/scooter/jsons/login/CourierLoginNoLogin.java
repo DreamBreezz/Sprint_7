@@ -1,6 +1,6 @@
 package scooter.jsons.login;
 
-import scooter.jsons.CourierLogin;
+import scooter.jsons.courier.Courier;
 
 public class CourierLoginNoLogin {
     private String password;
@@ -10,8 +10,8 @@ public class CourierLoginNoLogin {
     }
 
     //метод создания json, используя данные существующего курьера
-    public static CourierLoginNoLogin from(CourierLogin courierLogin) {
-        return new CourierLoginNoLogin(courierLogin.getPassword());
+    public static CourierLoginNoLogin from(Courier courier) {
+        return new CourierLoginNoLogin(courier.getPassword());
     }
 
     public String getPassword() {

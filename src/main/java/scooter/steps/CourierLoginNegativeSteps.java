@@ -2,7 +2,7 @@ package scooter.steps;
 
 import io.qameta.allure.Step;
 import scooter.jsons.courier.Courier;
-import scooter.jsons.CourierLogin;
+import scooter.jsons.login.CourierLogin;
 import scooter.jsons.login.CourierLoginNoLogin;
 import scooter.jsons.login.CourierLoginNoPassword;
 import scooter.jsons.login.CourierLoginWrongPassword;
@@ -10,56 +10,18 @@ import scooter.jsons.login.CourierLoginWrongPassword;
 import static java.net.HttpURLConnection.*;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static scooter.Constants.ACCOUNT_NOT_FOUND;
 import static scooter.Constants.NOT_ENOUGH_DATA_TO_LOGIN;
 import static scooter.rests.CourierLoginRests.*;
 import static scooter.rests.CourierRests.*;
 
-public class CourierLoginSteps {
+public class CourierLoginNegativeSteps {
 
     public static int id;
     public static Courier courier;
     public static CourierLogin courierLogin;
     public static String message;
     public static boolean create;
-
-    @Step("Создание курьера")
-    public static void createCourier() {
-        // генерируем json для создания
-        courier = Courier.random();
-        // дёргаем ручку создания
-        create = createCourierRest(courier)
-                .assertThat().statusCode(HTTP_CREATED)
-                .extract().path("ok");
-    }
-
-    @Step("Логин курьера")
-    public static void loginCourier() {
-        // создаём json для логина
-        courierLogin = CourierLogin.from(courier);
-        // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить курьера
-        id = courierLoginRest(courierLogin)
-                .assertThat().statusCode(HTTP_OK)
-                .extract().path("id");
-    }
-
-    @Step("Удаление курьера, если был создан")
-    public static void deleteCourierIfExists() {
-        if(id > 0) {
-            boolean delete = deleteCourierRest(id)
-                    .assertThat().statusCode(HTTP_OK)
-                    .extract().path("ok");
-            assertTrue(delete);
-            id = 0;
-        }
-    }
-
-
-    @Step("Успешный запрос вернул ID")
-    public static void isIdReturned() {
-        assert id > 0;
-    }
 
     @Step("Попытка логина без пароля")
     public static void tryLoginWithoutPassword() {
@@ -77,12 +39,12 @@ public class CourierLoginSteps {
     }
 
     @Step("Попытка создания курьера без логина")
-    public static void tryLoginNoLogin() {
+    public static void tryLoginNoLogin(Courier courier) {
         // создаём json для логина
-        CourierLoginNoLogin courier = CourierLoginNoLogin.from(courierLogin);
+        CourierLoginNoLogin courierNoLogin = CourierLoginNoLogin.from(courier);
 
         // дёргаем ручку
-        message = loginNoLoginRest(courier)
+        message = loginNoLoginRest(courierNoLogin)
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract().path("message");
     }

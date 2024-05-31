@@ -4,9 +4,15 @@ package scooter;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Test;
-import static scooter.steps.CourierLoginSteps.*;
+import scooter.jsons.courier.Courier;
+
+import static scooter.steps.CourierLoginNegativeSteps.*;
+import static scooter.steps.CourierSteps.*;
 
 public class CourierLoginTests {
+
+    public int id;
+    public Courier courier;
 
     @After
     public void deleteCourier() {
@@ -36,7 +42,7 @@ public class CourierLoginTests {
     public void loginWithoutLoginTest() {
         createCourier();
         loginCourier();
-        tryLoginNoLogin();
+        tryLoginNoLogin(courier);
         checkErrorMessageTextNotEnoughDataToLogin();
     }
 

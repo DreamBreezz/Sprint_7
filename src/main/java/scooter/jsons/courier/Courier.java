@@ -17,16 +17,21 @@ public class Courier {
         this.firstName = firstName;
     }
 
-    //какой-то дефолтный курьер
+    // какой-то дефолтный курьер
     public static Courier defaultGuy() {
         return new Courier("George1984", "MyStr0ngP@ssword", "GeorgeOrwell");
     }
 
-    //метод для создания курьера с рандомными логином, паролем и именем
+    // метод для создания курьера с рандомными логином, паролем и именем
     public static Courier random() {
         return new Courier(RandomStringUtils.randomAlphabetic(6,12),
                 RandomStringUtils.randomAlphabetic(4) + RandomStringUtils.randomAlphabetic(4),
                 RandomStringUtils.randomAlphabetic(6,12));
+    }
+
+    // создание курьера без имени
+    public static Courier noName() {
+        return new Courier(random().getLogin(), random().getPassword(), null);
     }
 
     public String getLogin() {

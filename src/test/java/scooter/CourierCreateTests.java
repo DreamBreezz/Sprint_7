@@ -4,15 +4,15 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Test;
-import static scooter.steps.CourierCreateSteps.*;
+import static scooter.steps.CourierCreateNegativeSteps.*;
+import static scooter.steps.CourierSteps.*;
 
 public class CourierCreateTests {
 
     @After
     @Step("Удаление курьера, если был создан")
     public void deleteCourier() {
-        deleteCourierIfExists(id);
-        id = 0;
+        deleteCourierIfExists();
     }
 
     @Test
@@ -20,7 +20,6 @@ public class CourierCreateTests {
     public void createCourierTest() {
         createCourier();
         checkKeyOkEqualsTrue();
-        courierLogin();
     }
 
     // Этот тест упадёт, т.к. текст ответа не соответствует документации
@@ -28,7 +27,6 @@ public class CourierCreateTests {
     @DisplayName("[-] Courier - Создание курьера: два одинаковых")
     public void tryCreateTwoSameCouriersTest() {
         createCourier();
-        courierLogin();
         tryCreateSecondCourier();
         checkErrorMessageTextLoginAlreadyUsed();
     }
@@ -42,7 +40,7 @@ public class CourierCreateTests {
 
     @Test
     @DisplayName("[-] Courier - Создание курьера: без пароля")
-    public void createCourierWithoutPasswordTest() {
+    public void tryCreateCourierWithoutPasswordTest() {
         tryCreateCourierWithoutPassword();
         checkErrorMessageTextNotEnoughDataToCreate();
     }
@@ -50,7 +48,7 @@ public class CourierCreateTests {
     // этот тест упадёт, т.к. система позволяет создать курьера без имени
     @Test
     @DisplayName("[-] Courier - Создание курьера: без имени")
-    public void createCourierWithoutNameTest() {
+    public void tryCreateCourierWithoutNameTest() {
         tryCreateCourierWithoutName();
         checkErrorMessageTextNotEnoughDataToCreate();
     }
@@ -60,7 +58,6 @@ public class CourierCreateTests {
     @DisplayName("[-] Courier - Создание курьера: с существующим логином")
     public void createCourierWithLoginExistsTest() {
         createCourier();
-        courierLogin();
         tryCreateCourierWithSameLogin();
         checkErrorMessageTextLoginAlreadyUsed();
     }

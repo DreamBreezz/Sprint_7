@@ -1,7 +1,5 @@
 package scooter.jsons.login;
 
-import scooter.jsons.CourierLogin;
-
 public class CourierLoginNoPassword {
     private String login;
 

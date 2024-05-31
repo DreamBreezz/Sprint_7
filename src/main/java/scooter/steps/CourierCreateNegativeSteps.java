@@ -2,16 +2,10 @@ package scooter.steps;
 
 import io.qameta.allure.Step;
 import scooter.jsons.courier.Courier;
-import scooter.jsons.courier.CourierNoLogin;
-import scooter.jsons.courier.CourierNoName;
-import scooter.jsons.courier.CourierNoPassword;
-import scooter.jsons.login.CourierLogin;
-
 import static java.net.HttpURLConnection.*;
 import static org.junit.Assert.assertEquals;
 import static scooter.Constants.LOGIN_ALREADY_USED;
 import static scooter.Constants.NOT_ENOUGH_DATA_TO_CREATE;
-import static scooter.rests.CourierRests.*;
 import static scooter.rests.CourierRests.createCourierRest;
 import static scooter.steps.CourierSteps.courier;
 
@@ -19,7 +13,6 @@ public class CourierCreateNegativeSteps {
 
     public static int id;
     public static String message;
-    //public static Courier courier;
 
     @Step("Попытка создать второго курьера с такими же параметрами, как у первого")
     public static void tryCreateSecondCourier() {
@@ -36,8 +29,12 @@ public class CourierCreateNegativeSteps {
 
     @Step("Попытка создать курьера без логина")
     public static void tryCreateCourierWithoutLogin() {
-        CourierNoLogin courierNoLogin = CourierNoLogin.randomNoLogin();
-        message = courierNoLoginRest(courierNoLogin)
+//        CourierNoLogin courierNoLogin = CourierNoLogin.randomNoLogin();
+//        message = courierNoLoginRest(courierNoLogin)
+//                .assertThat().statusCode(HTTP_BAD_REQUEST)
+//                .extract().path("message");
+        Courier courier = Courier.noLogin();
+        message = createCourierRest(courier)
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract().path("message");
     }
@@ -49,14 +46,15 @@ public class CourierCreateNegativeSteps {
 
     @Step("Попытка создать курьера без пароля")
     public static void tryCreateCourierWithoutPassword() {
-        CourierNoPassword courier = CourierNoPassword.randomNoPassword();
-        message = courierNoPasswordRest(courier)
+        Courier courier = Courier.noPassword();
+        message = createCourierRest(courier)
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract().path("message");
     }
 
     @Step("Попытка создания курьера без имени")
     public static void tryCreateCourierWithoutName() {
+        // создание рандомного курьера без имени
         Courier courier = Courier.noName();
         message = createCourierRest(courier)
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
@@ -65,7 +63,7 @@ public class CourierCreateNegativeSteps {
 
     @Step("Попытка создать второго курьера, с таким же логином")
     public static void tryCreateCourierWithSameLogin() {
-        // генерируем второй json, с таким же логином, как у первого, но другим именем
+        // генерация json второго курьера, с таким же логином, как у первого, но другим именем
         Courier sameCourierDiffName = new Courier(
                 courier.getLogin(),
                 courier.getPassword(),

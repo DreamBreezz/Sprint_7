@@ -2,9 +2,6 @@ package scooter.rests;
 
 import io.restassured.response.ValidatableResponse;
 import scooter.jsons.courier.Courier;
-import scooter.jsons.courier.CourierNoLogin;
-import scooter.jsons.courier.CourierNoName;
-import scooter.jsons.courier.CourierNoPassword;
 import scooter.jsons.login.CourierLogin;
 
 import static scooter.Constants.*;
@@ -24,22 +21,6 @@ public class CourierRests {
                 .body(courierLogin)
                 .when()
                 .post(COURIER_LOGIN_PATH)
-                .then().log().all();
-    }
-
-    public static ValidatableResponse courierNoLoginRest(CourierNoLogin courierNoLogin) {
-        return spec()
-                .body(courierNoLogin)
-                .when()
-                .post(CREATE_COURIER_PATH)
-                .then().log().all();
-    }
-
-    public static ValidatableResponse courierNoPasswordRest(CourierNoPassword courierNoPassword) {
-        return spec()
-                .body(courierNoPassword)
-                .when()
-                .post(CREATE_COURIER_PATH)
                 .then().log().all();
     }
 

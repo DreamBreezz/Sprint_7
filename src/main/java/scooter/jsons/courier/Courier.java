@@ -28,10 +28,25 @@ public class Courier {
                 RandomStringUtils.randomAlphabetic(4) + RandomStringUtils.randomAlphabetic(4),
                 RandomStringUtils.randomAlphabetic(6,12));
     }
+    // создание курьера без логина
+    public static Courier noLogin() {
+        return new Courier(null,
+                random().getPassword(),
+                random().getFirstName());
+    }
+
+    // создание курьера без пароля
+    public static Courier noPassword() {
+        return new Courier(random().getLogin(),
+                null,
+                random().getFirstName());
+    }
 
     // создание курьера без имени
     public static Courier noName() {
-        return new Courier(random().getLogin(), random().getPassword(), null);
+        return new Courier(random().getLogin(),
+                random().getPassword(),
+                null);
     }
 
     public String getLogin() {

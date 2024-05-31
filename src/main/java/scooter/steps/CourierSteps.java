@@ -1,7 +1,6 @@
 package scooter.steps;
 
 import io.qameta.allure.Step;
-import scooter.jsons.courier.CourierNoName;
 import scooter.jsons.login.CourierLogin;
 import scooter.jsons.courier.Courier;
 
@@ -13,7 +12,6 @@ import static scooter.rests.CourierRests.*;
 public class CourierSteps {
 
     public static Courier courier;
-    public static CourierNoName courierNoName;
     public static boolean create;
     public static int id;
 

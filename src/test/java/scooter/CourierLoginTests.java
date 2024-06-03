@@ -3,26 +3,28 @@ package scooter;
 
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import scooter.jsons.courier.Courier;
 
 import static scooter.steps.CourierLoginNegativeSteps.*;
 import static scooter.steps.CourierSteps.*;
 
 public class CourierLoginTests {
 
-    public int id;
-    public Courier courier;
+    @Before
+    public void createAndLoginCourier() {
+        createCourier();
+    }
 
     @After
     public void deleteCourier() {
         deleteCourierIfExists();
+        courier = null;
     }
 
     @Test
     @DisplayName("[+] Courier - Логин курьера в системе")
     public void loginCourierTest() {
-        createCourier();
         loginCourier();
         isIdReturned();
     }
@@ -31,8 +33,6 @@ public class CourierLoginTests {
     @Test
     @DisplayName("[-] Courier - Логин курьера в системе: без пароля")
     public void loginWithoutPasswordTest() {
-        createCourier();
-        loginCourier();
         tryLoginWithoutPassword();
         checkErrorMessageTextNotEnoughDataToLogin();
     }
@@ -40,9 +40,7 @@ public class CourierLoginTests {
     @Test
     @DisplayName("[-] Courier - Логин курьера в системе: без логина")
     public void loginWithoutLoginTest() {
-        createCourier();
-        loginCourier();
-        tryLoginNoLogin(courier);
+        tryLoginNoLogin();
         checkErrorMessageTextNotEnoughDataToLogin();
     }
 
@@ -56,8 +54,6 @@ public class CourierLoginTests {
     @Test
     @DisplayName("[-] Courier - Логин курьера в системе: корректный логин, некорректный пароль")
     public void loginWithWrongPasswordTest() {
-        createCourier();
-        loginCourier();
         tryLoginWithWrongPassword();
         checkErrorMessageTextAccountNotFound();
     }

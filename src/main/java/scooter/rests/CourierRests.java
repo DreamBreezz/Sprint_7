@@ -1,9 +1,8 @@
 package scooter.rests;
 
 import io.restassured.response.ValidatableResponse;
-import scooter.jsons.courier.Courier;
-import scooter.jsons.login.CourierLogin;
-
+import scooter.jsons.Courier;
+import scooter.jsons.CourierLogin;
 import static scooter.Constants.*;
 import static scooter.rests.RestBase.spec;
 

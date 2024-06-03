@@ -1,8 +1,8 @@
 package scooter.steps;
 
 import io.qameta.allure.Step;
-import scooter.jsons.login.CourierLogin;
-import scooter.jsons.courier.Courier;
+import scooter.jsons.CourierLogin;
+import scooter.jsons.Courier;
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -14,6 +14,7 @@ public class CourierSteps {
     public static Courier courier;
     public static boolean create;
     public static int id;
+    public static CourierLogin courierLogin;
 
     @Step("Создание курьера")
     public static void createCourier() {
@@ -30,10 +31,10 @@ public class CourierSteps {
         assertTrue(create);
     }
 
-    @Step("Логин курьера (для дальнейшего удаления)")
+    @Step("Логин курьера")
     public static void loginCourier() {
         // создаём json для логина
-        CourierLogin courierLogin = CourierLogin.from(courier);
+        courierLogin = CourierLogin.from(courier);
         // дёргаем ручку логина, чтобы узнать ID, чтобы потом удалить курьера
         id = courierLoginRest(courierLogin)
                 .assertThat().statusCode(HTTP_OK)
@@ -55,12 +56,12 @@ public class CourierSteps {
         }
     }
 
-    @Step("Удаление курьера")
+    @Step("Удаление курьера, если был создан")
     public static void deleteCourierIfExists() {
         if (courier != null) {
-            loginCourier();  // чтобы удалить курьера, нам нужно узнать его id
+            loginCourier();  // чтобы удалить курьера, нам нужно его залогинить, чтобы узнать его id
             deleteCourier();
-            courier = null;  // в коце теста надо удалить курьера
+            courier = null;  // в конце очистить переменную
         }
     }
 }

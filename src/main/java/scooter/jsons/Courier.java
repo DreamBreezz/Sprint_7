@@ -1,4 +1,4 @@
-package scooter.jsons.courier;
+package scooter.jsons;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -8,7 +8,6 @@ public class Courier {
     private String firstName;
 
     public Courier() {
-
     }
 
     public Courier(String login, String password, String firstName) {
@@ -24,9 +23,11 @@ public class Courier {
 
     // метод для создания курьера с рандомными логином, паролем и именем
     public static Courier random() {
-        return new Courier(RandomStringUtils.randomAlphabetic(6,12),
-                RandomStringUtils.randomAlphabetic(4) + RandomStringUtils.randomAlphabetic(4),
-                RandomStringUtils.randomAlphabetic(6,12));
+        return new Courier(
+                "Login_" + RandomStringUtils.randomAlphabetic(4,6),
+                RandomStringUtils.randomAlphabetic(4) + RandomStringUtils.randomNumeric(4),
+                "Name_" + RandomStringUtils.randomAlphabetic(4,6)
+        );
     }
     // создание курьера без логина
     public static Courier noLogin() {

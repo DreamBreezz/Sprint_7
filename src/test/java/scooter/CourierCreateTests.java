@@ -1,6 +1,5 @@
 package scooter;
 
-import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import static scooter.steps.CourierSteps.*;
 public class CourierCreateTests {
 
     @After
-    @Step("Удаление курьера, если был создан")
     public void deleteCourier() {
         deleteCourierIfExists();
     }

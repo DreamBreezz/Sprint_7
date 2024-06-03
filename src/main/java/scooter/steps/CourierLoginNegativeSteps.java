@@ -1,34 +1,25 @@
 package scooter.steps;
 
 import io.qameta.allure.Step;
-import scooter.jsons.courier.Courier;
-import scooter.jsons.login.CourierLogin;
-import scooter.jsons.login.CourierLoginNoLogin;
-import scooter.jsons.login.CourierLoginNoPassword;
-import scooter.jsons.login.CourierLoginWrongPassword;
-
+import scooter.jsons.CourierLogin;
 import static java.net.HttpURLConnection.*;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.junit.Assert.assertEquals;
 import static scooter.Constants.ACCOUNT_NOT_FOUND;
 import static scooter.Constants.NOT_ENOUGH_DATA_TO_LOGIN;
-import static scooter.rests.CourierLoginRests.*;
 import static scooter.rests.CourierRests.*;
+import static scooter.steps.CourierSteps.courier;
 
 public class CourierLoginNegativeSteps {
 
-    public static int id;
-    public static Courier courier;
-    public static CourierLogin courierLogin;
     public static String message;
-    public static boolean create;
 
     @Step("Попытка логина без пароля")
     public static void tryLoginWithoutPassword() {
         // создаём json для логина
-        CourierLoginNoPassword courier = CourierLoginNoPassword.from(courierLogin);
+        CourierLogin c = CourierLogin.noPassword(courier);
         // дёргаем ручку
-        message = loginNoPasswordRest(courier)
+        message = courierLoginRest(c)
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract().path("message");
     }
@@ -39,22 +30,17 @@ public class CourierLoginNegativeSteps {
     }
 
     @Step("Попытка создания курьера без логина")
-    public static void tryLoginNoLogin(Courier courier) {
-        // создаём json для логина
-        CourierLoginNoLogin courierNoLogin = CourierLoginNoLogin.from(courier);
-
-        // дёргаем ручку
-        message = loginNoLoginRest(courierNoLogin)
+    public static void tryLoginNoLogin() {
+        CourierLogin c = CourierLogin.noLogin(courier);
+        message = courierLoginRest(c)
                 .assertThat().statusCode(HTTP_BAD_REQUEST)
                 .extract().path("message");
     }
 
     @Step("Попытка логина с некорректным логином")
     public static void tryLoginWithWrongLogin() {
-        // создание json для алогина
-        CourierLogin courierWrongLogin = CourierLogin.random();
-        // дёргаем ручку
-        message = courierLoginRest(courierWrongLogin)
+        CourierLogin c = CourierLogin.wrongLogin(courier);
+        message = courierLoginRest(c)
                 .assertThat().statusCode(HTTP_NOT_FOUND)
                 .extract().path("message");
     }
@@ -67,9 +53,9 @@ public class CourierLoginNegativeSteps {
     @Step("Логин с некорректным паролем")
     public static void tryLoginWithWrongPassword() {
         // создание json для такого же логина, но c некорректным паролем
-        CourierLoginWrongPassword courierWrongPassword = CourierLoginWrongPassword.from(courierLogin);
+        CourierLogin c = CourierLogin.wrongPassword(courier);
         // дёргаем ручку
-        message = loginWrongPasswordRest(courierWrongPassword)
+        message = courierLoginRest(c)
                 .assertThat().statusCode(HTTP_NOT_FOUND)
                 .extract().path("message");
     }

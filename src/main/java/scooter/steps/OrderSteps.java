@@ -1,7 +1,7 @@
 package scooter.steps;
 
 import io.qameta.allure.Step;
-import scooter.jsons.order.Order;
+import scooter.jsons.Order;
 
 import java.util.List;
 

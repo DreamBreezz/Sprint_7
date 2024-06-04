@@ -11,8 +11,7 @@ import static scooter.steps.OrderSteps.*;
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
 
-    private List<String> color;
-    private int track;
+    private final List<String> color;
 
     public CreateOrderTest(List<String> color) {
         this.color = color;

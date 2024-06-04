@@ -40,7 +40,8 @@ public class OrderSteps {
             boolean ok = orderCancelRest(deleteOrder)
                     .assertThat().statusCode(HTTP_OK)
                     .and()
-                    .extract().path("ok").equals(true);
+                    .extract().path("ok");
+            assertTrue(ok);
             track = 0;
         }
     }

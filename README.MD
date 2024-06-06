@@ -4,6 +4,10 @@
 
 Цель проекта — создать API-автотесты и создать отчёт в Allure.
 
+Тестируемый сервис: https://qa-scooter.praktikum-services.ru/
+
+Документация по API: https://qa-scooter.praktikum-services.ru/docs/
+
 ## Основные задания проекта
 
 Протестировать ручки:
